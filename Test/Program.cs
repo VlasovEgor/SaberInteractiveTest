@@ -4,12 +4,13 @@ class Program
 {
     static void Main(string[] args)
     {
-        ListRand list = CreateList();
+        ListRand list = new ListRand();
 
+        list.FillingList();
         list.AssigningLinksRand();
 
         Console.WriteLine("Original list:");
-        PrintList(list);
+        list.PrintList();
 
         using (FileStream fileStream = new FileStream("list.dat", FileMode.Create))
         {
@@ -24,43 +25,7 @@ class Program
         }
 
         Console.WriteLine("Deserialized list:");
-        PrintList(deserializedList);
-    }
-
-    static ListRand CreateList()
-    {
-        int minimumNumberOfElements = 1;
-        int maximumNumberOfElements = 20;
-
-        int maximumNumberInData = 100;
-
-        ListRand list = new ListRand();
-
-        Random random = new Random();
-        int count = random.Next(minimumNumberOfElements, maximumNumberOfElements);
-        list.Count = count;
-        list.Head = new ListNode { Data = random.Next(maximumNumberInData).ToString() };
-        ListNode currentNode = list.Head;
-
-        for (int i = 1; i < count; i++)
-        {
-            ListNode node = new ListNode { Data = random.Next(maximumNumberInData).ToString(), Prev = list.Tail };
-            currentNode.Next = node;
-            currentNode = node;
-        }
-
-        return list;
-    }
-
-    static void PrintList(ListRand list)
-    {
-        ListNode current = list.Head;
-
-        while (current != null)
-        {
-            Console.WriteLine($"Data: {current.Data}, Rand: {current.Rand.Data}");
-            current = current.Next;
-        }
+        deserializedList.PrintList();
     }
 }
 
@@ -77,6 +42,29 @@ class ListRand
     public ListNode Head;
     public ListNode Tail;
     public int Count;
+
+    public void FillingList()
+    {
+        int minimumNumberOfElements = 1;
+        int maximumNumberOfElements = 20;
+
+        int maximumNumberInData = 100;
+
+
+        Random random = new Random();
+        int count = random.Next(minimumNumberOfElements, maximumNumberOfElements);
+        Count = count;
+        Head = new ListNode { Data = random.Next(maximumNumberInData).ToString() };
+        ListNode currentNode = Head;
+
+        for (int i = 1; i < count; i++)
+        {
+            ListNode node = new ListNode { Data = random.Next(maximumNumberInData).ToString(), Prev = Tail };
+            currentNode.Next = node;
+            currentNode = node;
+        }
+
+    }
 
     public void AssigningLinksRand()
     {
@@ -115,6 +103,17 @@ class ListRand
         }
 
         return currentNode;
+    }
+
+    public void PrintList()
+    {
+        ListNode current = Head;
+
+        while (current != null)
+        {
+            Console.WriteLine($"Data: {current.Data}, Rand: {current.Rand.Data}");
+            current = current.Next;
+        }
     }
 
     public void Serialize(FileStream fileStream)
